@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="WeatherApplication.AardbevingenPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:WeatherApplication.Services"
+    xmlns:vm="clr-namespace:WeatherApplication.ViewModels"
+    x:DataType="vm:EarthquakeViewModel">
+
+    <!--  Binding the ViewModel to the ContentPage  -->
+    <ContentPage.BindingContext>
+        <vm:EarthquakeViewModel />
+    </ContentPage.BindingContext>
+
+    <!--  Make the page scrollable  -->
+    <ScrollView>
+
+        <StackLayout Padding="10">
+            <!--  CollectionView to display earthquakes  -->
+            <CollectionView ItemsSource="{Binding EarthquakeDataList}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:EarthquakeData">
+                        <StackLayout Padding="10">
+                            <!--  Location  -->
+                            <Label FontAttributes="Bold" Text="{Binding Location}" />
+                            <!--  Time  -->
+                            <Label Text="{Binding Time, StringFormat='{0:MMM dd, yyyy HH:mm}'}" />
+                            <!--  Magnitude with label  -->
+                            <Label Text="{Binding Magnitude, StringFormat='Magnitude: {0}'}" />
+                            <Label Text="{Binding Distance}" />
+
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--  Buttons to navigate pages (Next/Previous)  -->
+            <StackLayout
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Spacing="20">
+                <!--  Previous Button  -->
+                <Button
+                    Command="{Binding PreviousPageCommand}"
+                    HorizontalOptions="Center"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    Text="Previous" />
+
+                <!--  Next Button  -->
+                <Button
+                    Command="{Binding NextPageCommand}"
+                    HorizontalOptions="Center"
+                    IsEnabled="{Binding CanGoNext}"
+                    Text="Next" />
+            </StackLayout>
+        </StackLayout>
+
+    </ScrollView>
+
+</ContentPage>

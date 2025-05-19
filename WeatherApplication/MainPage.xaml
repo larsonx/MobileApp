@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="WeatherApplication.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:WeatherApplication.Services"
+    xmlns:vm="clr-namespace:WeatherApplication.ViewModels"
+    x:DataType="vm:MainViewModel">
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+
+        <StackLayout Padding="10" Spacing="15">
+            <!--  City Input  -->
+            <Frame Padding="10" CornerRadius="30">
+                <VerticalStackLayout>
+                    <Entry Placeholder="City name" Text="{Binding City}" />
+                </VerticalStackLayout>
+            </Frame>
+            <Button Command="{Binding FetchCommand}" Text="Weer en weervoorspelling" />
+
+            <VerticalStackLayout Padding="20">
+                <!-- Top Label and Image -->
+                <Label
+        Margin="0,0,0,10"
+        FontAttributes="Bold"
+        FontSize="Medium"
+        HorizontalOptions="Center"
+        Text="{Binding ForecastVM.ForecastData.City}" />
+
+                <Image
+        Source="cloud.png"
+        WidthRequest="200"
+        HeightRequest="200"
+        Aspect="AspectFit"
+        HorizontalOptions="Center"
+        />
+                <Label
+        FontAttributes="Bold"
+        FontSize="Large"
+        HorizontalOptions="Center"
+        Text="Huidig weer" />
+
+                <!-- Weather info in a Grid -->
+                <Grid ColumnDefinitions="*,*" 
+          RowDefinitions="Auto,Auto"
+          ColumnSpacing="20"
+                      Margin="5,20,5,0"
+          Padding="0,10">
+
+                    <!-- Row 0: City + Temperature -->
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Margin="0,0,0,25"
+               Text="{Binding WeatherVM.WeatherData.City, StringFormat='Stad: {0}'}" />
+
+                    <Label Grid.Row="0" Grid.Column="1"
+               Text="{Binding WeatherVM.WeatherData.Temperature, StringFormat='Temperatuur: {0} °C'}"
+               HorizontalOptions="End" />
+
+                    <!-- Row 1: Humidity + Wind -->
+                    <Label Grid.Row="1" Grid.Column="0"
+               Text="{Binding WeatherVM.WeatherData.Humidity, StringFormat='Luchtvochtigheid: {0}%'}" />
+
+                    <Label Grid.Row="1" Grid.Column="1"
+               Text="{Binding WeatherVM.WeatherData.WindSpeed, StringFormat='Windkracht: {0} m/s'}"
+               HorizontalOptions="End" />
+                </Grid>
+            </VerticalStackLayout>
+
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="3-uur weervoorspelling:" />
+            
+            <CollectionView ItemsSource="{Binding ForecastVM.ForecastData.TodayHourly}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:HourlyForecast">
+                        <VerticalStackLayout Margin="25,0,20,0" HorizontalOptions="Center" VerticalOptions="Center">
+                            <!-- Time -->
+                            <Label 
+                    Text="{Binding Time, StringFormat='{0:HH:mm}'}"
+                    HorizontalOptions="Center" />
+
+                            <!-- Weather icon (static or dynamic) -->
+                            <Image
+                    Source="cloud.png"
+                    WidthRequest="30"
+                    HeightRequest="30"
+                    Aspect="AspectFit"
+                    HorizontalOptions="Center" />
+
+                            <!-- Temperature -->
+                            <Label 
+                    Text="{Binding Temperature, StringFormat='{0}°C'}"
+                    HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="6-Dagen weervoorspelling:" />
+            <CollectionView ItemsSource="{Binding ForecastVM.ForecastData.SevenDayForecast}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DailyForecast">
+                        <VerticalStackLayout>
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                                <!-- Date on the left -->
+                                <Label
+        Grid.Column="0"
+        Text="{Binding Date, StringFormat='{0:dddd, MMM d}'}"
+        VerticalOptions="Center" />
+
+                                <!-- Right side: Image + Temp -->
+                                <HorizontalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                    <Image
+            Source="cloud.png"
+            WidthRequest="25"
+            HeightRequest="25"
+            Aspect="AspectFit" />
+                                    <Label
+            Text="{Binding MaxTemperature, StringFormat='{0} '}"
+            VerticalOptions="Center"
+            HorizontalOptions="End" />
+                                    <Label
+Text="{Binding MinTemperature, StringFormat='{0}°C'}"
+VerticalOptions="Center"
+HorizontalOptions="End" />
+
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
